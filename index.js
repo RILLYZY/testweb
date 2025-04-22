@@ -1,6 +1,7 @@
 const express = require("express");
 const fetch = require("node-fetch");
 const bodyParser = require("body-parser");
+const fs = require("fs");
 const { Octokit } = require("@octokit/rest");
 
 const app = express();
@@ -28,11 +29,11 @@ app.get("/style.css", (req, res) => {
 });
 
 // Endpoint untuk login
-app.post("/login", async (req, res) => {
+app.post("/login", (req, res) => {
     const { username, password } = req.body;
-    const database = await fetchDatabase();
+    const users = JSON.parse(fs.readFileSync("users.json"));
 
-    const user = database.users.find(u => u.username === username && u.password === password);
+    const user = users.find(u => u.username === username && u.password === password);
     if (user) {
         res.json({ success: true });
     } else {
